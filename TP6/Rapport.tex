@@ -10,55 +10,54 @@
 	\mccTitle
 
 	\chapter{Envoie d’une vidéo via le protocole UDP}
+		\section{Serveur}
+			L'objectif de cette question est de réaliser un programme python permettant de filmer et de streamer en live sur 3 adresses différentes.
+	
+			On commence par initialiser un socket avec les paramètres AF\_INET (utiliser Internet) et SOCK\_DGRAM (protocole UDP).
+			Ensuite on créé un objet PiCamera est initialisons les paramètres suivants :
+			\begin{easylist}[itemize]
+				@ \textbf{vflip} : inversion verticale de l'image.
+				@ \textbf{hflip} : inversion horizontale de l'image.
+				@ \textbf{resolution} : résolution de l'image. Ici à 640x480 pixels.
+				@ \textbf{framefate} : framerate théorique de capture. Ici à 32 images par seconde.
+			\end{easylist} 
+	
+			Un objet rawCapture permettra par la suite d'obtenir tous les pixels de l'image enregistrée.
+	
+			Une boucle For itérant sur la méthode camera.capture\_continuous() permet de traiter chaque image tant que le flux vidéo est actif.
+	
+			Pour chaque image, on commence par la passer en nuance de gris grâce à la méthode cv2.cvtColor() puis on la redimensionne grâce à la méthode cv2.resize().
+	
+			Enfin, grâce à la méthode sock.sendto() appelée 3 fois, nous pouvons envoyer sur les 3 streams l'image précédemment traitée. Dans notre cas, les sockets transfèrent les données vers notre client, soit la VM utilisée, sur les ports 5006, 5007 et 5008.
 
-	\section{Serveur}
-		L'objectif de cette question est de réaliser un programme python permettant de filmer et de streamer en live sur 3 adresses différentes.
-
-		On commence par initialiser un socket avec les paramètres AF_INET (utiliser Internet) et SOCK_DGRAM (protocole UDP).
-		Ensuite on créé un objet PiCamera est initialisons les paramètres suivants :
-\begin{description}
-	\item[vflip :] inversion verticale de l'image.
-	\item[hflip :] inversion horizontale de l'image.
-	\item[resolution :] résolution de l'image. Ici à 640x480 pixels.
-	\item[framefate :] framerate théorique de capture. Ici à 32 images par seconde.
-\begin{description} 
-
-		Un objet rawCapture pemettra par la suite d'obtenir tous les pixels de l'image enregistrée. \\
-
-		Une boucle For itérant sur la méthode camera.capture_continuous() permet de traiter chaque image tant que le flux vidéo est actif.
-
-		Pour chaque image, on commence par la passer en nuance de gris grâce à la méthode cv2.cvtColor() puis on la redimentionne grâce à la méthode cv2.resize().
-
-		Enfin, grâce à la méthode sock.sendto() appelée 3 fois, nous pouvons envoyer sur les 3 streams l'image précédemment traitée. Dans notre cas, les sockets transfèrent les données vers notre client, soit la VM utilisée, sur les ports 5006, 5007 et 5008.
-
-	\section{Client}
-		Pour le client, l'objectif est d'exposer un des 3 ports précédents afin de recevoir et afficher les données du stream. \\
-
-		On passe en paramètre le port souhaité et le stockons dans une variable.
-
-		On ouvre un socket similaire à celui du serveur et l'asignons à l'ip et au port voulus.
-
-		Ensuite, tant que le flux vidéo continu, on :
-\begin{itemize}
-	\item Reçoit des octets grâce à la méthode sock.recvfrom(). La taille lue correspond à la taille d'une image.
-	\item On créé une image à partir de ces données grâce à la méthode   np.frombuffer().
-	\item On redimentionne l'image en 320x180 pixels avec la méthode np.reshape().
-	\item Enfin, on affiche l'image obtenu grâce à la méthode cv2.imshow().
-\end{itemize}
-
-		Par soucis de commodité, nous avons ajouté une condition d'arrêt si l'on appuie sur la touche "q".
-
-	\section{Serveur 2}
-		Dans cette partie, plusieurs améliorations ont été ajoutées au serveur.
-
-\begin{itemize}
-	\item Chaque stream est envoyé sur un port différent. Ici les ports 5006, 5007 et 5008. Pour ce faire, chaque stream est associé à un thread grâce à une classe \textit{videoprocess} dérivée de \textit{thread}.
-	\item Le nombre d'images par seconde peut être choisit au lancement (premier paramètre du constructeur de l'objet \textit{videoprocess}.
-	\item Pour afficher un texte sur l'image, la méthode setImage de l'objet \textit{videoprocess} appelle cv2.putText(). \\
-\end{itemize}
-
-		Après tests, pour 1 client, nous arrivons à environ 13 images par seconde.
-		
-		Cependant, si l'on lance 3 clients simultanément, nous pouvons atteindre jusqu'à 10 images par seconde sur chacun d'entre eux.
+		\section{Client}
+			Pour le client, l'objectif est d'exposer un des 3 ports précédents afin de recevoir et afficher les données du stream.
+	
+			On passe en paramètre le port souhaité et le stockons dans une variable.
+	
+			On ouvre un socket similaire à celui du serveur et l'assignons à l'ip et au port voulus.
+	
+			Ensuite, tant que le flux vidéo continu, on :
+			\begin{easylist}[itemize]
+				@ Reçoit des octets grâce à la méthode sock.recvfrom(). La taille lue correspond à la taille d'une image.
+				@ On créé une image à partir de ces données grâce à la méthode np.frombuffer().
+				@ On redimensionne l'image en 320x180 pixels avec la méthode np.reshape().
+				@ Enfin, on affiche l'image obtenu grâce à la méthode cv2.imshow().
+			\end{easylist}
+	
+			Par soucis de commodité, nous avons ajouté une condition d'arrêt si l'on appuie sur la touche "q".
+	
+		\section{Serveur 2}
+			Dans cette partie, plusieurs améliorations ont été ajoutées au serveur.
+	
+			\begin{easylist}[itemize]
+				@ Chaque stream est envoyé sur un port différent. Ici les ports 5006, 5007 et 5008. Pour ce faire, chaque stream est associé à un thread grâce à une classe \textit{videoprocess} dérivée de \textit{thread}.
+				@ Le nombre d'images par seconde peut être choisit au lancement (premier paramètre du constructeur de l'objet \textit{videoprocess}.
+				@ Pour afficher un texte sur l'image, la méthode setImage de l'objet \textit{videoprocess} appelle cv2.putText().
+			\end{easylist}
+	
+			Après tests, pour 1 client, nous arrivons à environ 13 images par seconde.
+			
+			Cependant, si l'on lance 3 clients simultanément, nous pouvons atteindre jusqu'à 10 images par seconde sur chacun d'entre eux.
 		
 \end{document}
