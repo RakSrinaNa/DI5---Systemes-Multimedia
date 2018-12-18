@@ -1,1 +1,5 @@
 TP6/.idea
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
