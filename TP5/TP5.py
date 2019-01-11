@@ -62,9 +62,7 @@ def RMSE_pred(pred, data):
 	return sqrt(sum/count)
 
 def calcscore(data, pred, i, j):
-	dessus = 0
-	for u in range(0, len(pred)):
-		dessus += pred[u][i] * pred[u][j]
+	dessus = pred[:,i].T.dot(pred[:,j])
 	dessous1 = 0
 	for u in range(0, len(data)):
 		if data[u][i] >= 0:
@@ -121,7 +119,7 @@ rmse_pred_basic = RMSE_pred(pred_basic, data)
 print("RMSE Basic={rmse}".format(rmse=rmse_pred_basic))
 
 pred_n = np.ones((943, 1682))
-pred_n = pred_n * -1
+pred_n = pred_n * 0
 
 for l in range(0, len(pred_n)):
 	for i in range(0, len(data[l])):
@@ -135,8 +133,8 @@ score_s = np.ones((1682, 1682))
 score_s = score_s * -1
 
 for l in range(0, len(score_s)):
-	for i in range(0, len(pred_n[l])):
-		score_s[l][i] = calcscore(data, pred_n, l, i)
+	for i in range(0, l):
+		score_s[l][i] = score_s[i][l] = calcscore(data, pred_n, l, i)
 
 pred_g = np.ones((943, 1682))
 pred_g = pred_g * -1
