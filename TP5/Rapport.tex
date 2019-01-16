@@ -30,5 +30,11 @@
 		
 	\section{Méthode de voisinage}
 		La première remarque que nous pouvons faire est que le temps de calcul est grandement augmenté.
+		
+		Avec cette technique le RMSE descend aux alentours de 0.5.
+		Cela se comprends bien car cette fois-ci nous nous basons sur les notes précédentes de l'utilisateur/film mais tenons aussi compte de la similarité entre les films.
+		De cette manière nous éliminons les valeurs extrêmes qui peuvent influencer notre prédiction finale.
+		
+		Nous avons pu remarquer qu'en faisant les calculs en utilisant des opérations vectoriels (avec numpy), le temps de calcul est grandement réduit comparé à une méthode plus traditionnelle terme à terme.
 	
 \end{document}
