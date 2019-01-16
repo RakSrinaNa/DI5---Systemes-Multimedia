@@ -1,0 +1,40 @@
+\documentclass{report}
+\usepackage{MCC}
+
+\def\footauthor{Thomas COUCHOUD \& Victor COLEAU}
+\title{Système multimédia - TP5}
+\author{Thomas COUCHOUD\\\texttt{thomas.couchoud@etu.univ-tours.fr}\\Victor COLEAU\\\texttt{victor.coleau@etu.univ-tours.fr}}
+
+\rowcolors{1}{white}{white}
+\begin{document}
+	\mccTitle
+
+	\section{Prédiction aléatoire}
+		Avec la prédiction aléatoire, nous obtenons les RMSE suivants:
+		
+		\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
+			\hline
+			Valeur de prédiction & 1 & 2 & 3 & 4 & 5\\\hline
+			RMSE & 2.77 & 1.90 & 1.24 & 1.22 & 1.85\\\hline
+		\end{tabularx}
+		
+		La moyenne de ces valeurs est de 1.8, ce qui semble impliquer que les notes données ne sont pas équitablement réparties entre 1 et 5.
+		D'après le tableau ci-dessus, l'erreur la plus petite s'obtient avec un prédicateur égal à 3 ou 4, on peut en déduire que la majorité des notes se situe aux autour de 3 et 4.
+		Si l'on fait la moyenne des notes données, on obtient 3.52, ce qui confirme notre hypothèse.
+		
+	\section{Prédiction basique}
+		Avec la prédiction basique, nous obtenons un RMSE de 0.938.
+		
+		Le prédicateur basique semble alors mieux que l'aléatoire.
+		En effet on se base sur la moyenne des notes ainsi que la moyenne utilisateur et moyenne du film.
+		
+	\section{Méthode de voisinage}
+		La première remarque que nous pouvons faire est que le temps de calcul est grandement augmenté.
+		
+		Avec cette technique le RMSE descend aux alentours de 0.5.
+		Cela se comprends bien car cette fois-ci nous nous basons sur les notes précédentes de l'utilisateur/film mais tenons aussi compte de la similarité entre les films.
+		De cette manière nous éliminons les valeurs extrêmes qui peuvent influencer notre prédiction finale.
+		
+		Nous avons pu remarquer qu'en faisant les calculs en utilisant des opérations vectoriels (avec numpy), le temps de calcul est grandement réduit comparé à une méthode plus traditionnelle terme à terme.
+	
+\end{document}
